@@ -1,7 +1,7 @@
 {
-  "name": "express",
+  "name": "day-9month",
   "version": "1.0.0",
-  "description": "",
+  "description": "9월 수업내용",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
