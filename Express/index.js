@@ -1,17 +1,66 @@
 const express = require('express');
 const app = express();
 
-// port : 컴퓨터에는 외부 네트워크랑 통신을 할 수 있는 여러개의 구멍이 있는데,
-//  그 중에 몇 번째 port로 접속할건지 지정 해줘야 한다.
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended : true}));
 
-// listen이라는 함수로 서버를 열어준다.
-// listen(para1, para2)
-// para1 : 서버를 띄울 포트 번호
-// para2 : 실행 할 코드
-
-// 내 컴퓨터에서 7000번 포트로 진입 했을 때,
-// 콜백함수 안에 있는 코드 실행
-// localhost:7000(port number)
 app.listen(7000, function(){
   console.log('7000번 포트')
 })
+
+app.get('/', function(requests, response){
+  response.send('Helldddo1');
+})
+
+app.get('/login', function(requests, response){
+  response.sendFile(__dirname + '/login.html')
+})
+
+
+const MongoClient = require('mongodb').MongoClient;
+let db;
+
+MongoClient.connect('mongodb+srv://admin:1234@cluster0.zcoilvp.mongodb.net/?retryWrites=true&w=majority',function(error,client){
+  if(error){
+    return console.log(error)
+  }
+  
+  db = client.db('eggUp');
+
+  app.listen('7070',function(){
+    console.log('dgsfv')
+  })
+})
+
+
+
+app.post('/add', function(requests, response){
+  console.log(requests.body)
+  response.send('전송 완료')
+  // eggUp.eggDown
+
+  db.collection('eggDown').insertOne({_id : 1 ,아이디 : requests.body.id, 비밀번호 : requests.body.pw}, function(error, result){
+    console.log('저장 완료')
+  })
+
+  // 오른쪽
+  db.collection('total').updateOne({name : 'dataLength'},{ $inc : {toatalData : 1}},function(error, result){
+    if(error) {
+      return console.log(error)
+    }
+  })
+})
+
+
+// post 라는 cllection 이름 아래쪽. 
+app.set('views engine', 'ejs');
+
+app.get('/add', function(requests, response){
+  // post라는 collection에 저장된 데이터를 꺼낸다.
+  db.collection('eggDown').find().toArray(function(error, result){
+    console.log(error)
+    console.log(result)
+    response.render('data.ejs', {log : result})
+  })
+})
+
