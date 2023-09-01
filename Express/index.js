@@ -32,22 +32,32 @@ MongoClient.connect('mongodb+srv://admin:1234@cluster0.zcoilvp.mongodb.net/?retr
   })
 })
 
+// app.post('/add', function(requests, response){
+//   response.send('전송완료!')
+//   console.log(requests.body)
+// })
 
 
 app.post('/add', function(requests, response){
   console.log(requests.body)
-  response.send('전송 완료')
-  // eggUp.eggDown
+  response.send('전송 완료!')
 
-  db.collection('eggDown').insertOne({_id : 1 ,아이디 : requests.body.id, 비밀번호 : requests.body.pw}, function(error, result){
-    console.log('저장 완료')
-  })
 
-  // 오른쪽
-  db.collection('total').updateOne({name : 'dataLength'},{ $inc : {toatalData : 1}},function(error, result){
-    if(error) {
-      return console.log(error)
-    }
+  db.collection('total').findOne({name : 'dataLength'}, function(error, result){
+    console.log(error)
+    console.log(result.totalData) // total collection있는 총 데이터 수
+    let totalDataLength = result.totalData;
+
+    db.collection('eggDown').insertOne({_id : totalDataLength + 1 ,아이디 : requests.body.id, 비밀번호 : requests.body.pw}, function(error, result){
+      console.log('db에 저장완료!')
+    })
+  
+
+    db.collection('total').updateOne({name : 'dataLength'}, { $inc : { totalData : 1}},function(error, result){
+      if(error) {
+        return console.log(error)
+      }
+    })
   })
 })
 
@@ -63,4 +73,5 @@ app.get('/add', function(requests, response){
     response.render('data.ejs', {log : result})
   })
 })
+
 
