@@ -95,3 +95,7 @@ app.delete('/delete', function(requests, response){
   // 5xx => 서버 문제로 요청 실패
   response.status(200).send({message : '성공적'})
 })
+
+app.get('/info/:id',function(requests, response){
+db.collection('post')
+})
